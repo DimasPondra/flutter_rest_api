@@ -1,6 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:tutorial_rest_api/model/location_coordinates.dart';
+import 'package:tutorial_rest_api/model/location_street.dart';
+import 'package:tutorial_rest_api/model/location_timezone.dart';
 import 'package:tutorial_rest_api/model/user.dart';
+import 'package:tutorial_rest_api/model/user_dob.dart';
+import 'package:tutorial_rest_api/model/user_location.dart';
 import 'package:tutorial_rest_api/model/user_name.dart';
 
 class UserApi {
@@ -18,14 +23,49 @@ class UserApi {
         last: e['name']['last'],
       );
 
-      return User(
-        gender: e['gender'],
-        email: e['email'],
-        phone: e['phone'],
-        cell: e['cell'],
-        nat: e['nat'],
-        name: name,
+      final date = e['dob']['date'];
+
+      final dob = UserDob(
+        date: DateTime.parse(date),
+        age: e['dob']['age'],
       );
+
+      final postcode = e['location']['postcode'].toString();
+
+      final street = LocationStreet(
+        number: e['location']['street']['number'],
+        name: e['location']['street']['name'],
+      );
+
+      final coordinates = LocationCoordinates(
+        latitude: e['location']['coordinates']['latitude'],
+        longitude: e['location']['coordinates']['longitude'],
+      );
+
+      final timezone = LocationTimezone(
+        offset: e['location']['timezone']['offset'],
+        description: e['location']['timezone']['description'],
+      );
+
+      final location = UserLocation(
+        city: e['location']['city'],
+        state: e['location']['state'],
+        country: e['location']['country'],
+        postcode: postcode,
+        street: street,
+        coordinates: coordinates,
+        timezone: timezone,
+      );
+
+      return User(
+          gender: e['gender'],
+          email: e['email'],
+          phone: e['phone'],
+          cell: e['cell'],
+          nat: e['nat'],
+          name: name,
+          dob: dob,
+          location: location);
     }).toList();
 
     return users;
