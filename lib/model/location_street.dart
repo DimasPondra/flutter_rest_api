@@ -6,4 +6,11 @@ class LocationStreet {
     required this.number,
     required this.name,
   });
+
+  factory LocationStreet.fromMap(Map<String, dynamic> json) {
+    return LocationStreet(
+      number: json['number'],
+      name: json['name'],
+    );
+  }
 }
